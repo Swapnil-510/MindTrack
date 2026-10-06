@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <title>Your Journals</title>
+
+    <style>
+        /* CSS Variables for a consistent, professional theme */
+        :root {
+            --bg-gradient: linear-gradient(135deg, #e0eafc, #cfdef3);
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --success: #10b981;
+            --danger: #ef4444;
+            --danger-hover: #dc2626;
+            --border: #e5e7eb;
+            --ring: rgba(79, 70, 229, 0.2);
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-main);
+            box-sizing: border-box;
+        }
+
+        h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: #1e293b;
+            text-align: center;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        /* Card Styling with smooth fade-in animation */
+        .card {
+            background: var(--card-bg);
+            padding: 24px;
+            border-radius: 16px;
+            margin-bottom: 24px;
+            width: 100%;
+            max-width: 650px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(255,255,255,0.8);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.3s ease;
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transform: translateY(-2px);
+        }
+
+        form {
+            margin: 0;
+        }
+
+        /* Premium Textarea styling */
+        textarea {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 16px;
+            border-radius: 12px;
+            border: 2px solid var(--border);
+            font-size: 1.05rem;
+            line-height: 1.6;
+            color: var(--text-main);
+            background-color: #f9fafb;
+            resize: none; /* JS will handle resizing */
+            overflow: hidden; /* Hide scrollbars for a cleaner look */
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background-color: #fff;
+            box-shadow: 0 0 0 4px var(--ring);
+        }
+
+        .journal-buttons {
+            margin-top: 16px;
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end; /* Push buttons to the right */
+            align-items: center;
+        }
+
+        /* Master Button Styles */
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        button:active {
+            transform: scale(0.96); /* Satisfying click effect */
+        }
+
+        /* Specific Button Types */
+        .edit-btn {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2);
+        }
+
+        .edit-btn:hover {
+            background: var(--primary-hover);
+            box-shadow: 0 4px 6px rgba(79, 70, 229, 0.3);
+        }
+
+        .delete-btn {
+            background: transparent;
+            color: var(--danger);
+            border: 1px solid #fecaca;
+        }
+
+        .delete-btn:hover {
+            background: #fef2f2;
+            border-color: #f87171;
+            color: var(--danger-hover);
+        }
+
+        /* Fix anchor tag behavior wrapping the delete button */
+        a {
+            text-decoration: none;
+        }
+
+        /* Back to Dashboard Button */
+        body > a {
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        body > a > button {
+            background: white;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            padding: 12px 28px;
+            border-radius: 999px; /* Pill shape */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            font-size: 1rem;
+        }
+
+        body > a > button:hover {
+            color: var(--text-main);
+            background: #f9fafb;
+            border-color: #d1d5db;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<h2>Your Journals</h2>
+
+<div th:each="journal : ${journals}" class="card">
+
+    <p style="color:#6b7280; font-size:0.9rem; margin-bottom:10px;">
+        <span th:text="${#temporals.format(journal.createdAt,'dd MMM yyyy HH:mm')}"></span>
+    </p>
+
+    <form action="/journal/update" method="post">
+
+        <input type="hidden" name="id" th:value="${journal.id}">
+
+        <textarea name="text" rows="4"
+                  th:text="${journal.text}"></textarea>
+
+        <div class="journal-buttons">
+
+            <button type="submit" class="edit-btn">
+                Update
+            </button>
+
+            <a th:href="@{/journal/delete/{id}(id=${journal.id})}">
+                <button type="button" class="delete-btn">
+                    Delete
+                </button>
+            </a>
+
+        </div>
+
+    </form>
+</div>
+<br>
+
+<a href="/dashboard">
+    <button>Back to Dashboard</button>
+</a>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // 1. Auto-resize Textareas & Unsaved Changes Detection
+        const textareas = document.querySelectorAll('textarea');
+
+        textareas.forEach(textarea => {
+            // Function to adjust height
+            const autoResize = () => {
+                textarea.style.height = 'auto';
+                textarea.style.height = (textarea.scrollHeight) + 'px';
+            };
+
+            // Run once on load to fit existing content
+            autoResize();
+
+            // Track original value
+            const originalValue = textarea.value;
+            const card = textarea.closest('.card');
+            const updateBtn = card.querySelector('.edit-btn');
+
+            textarea.addEventListener('input', function() {
+                // Resize as user types
+                autoResize();
+
+                // Check for unsaved changes
+                if (this.value !== originalValue) {
+                    card.style.borderColor = '#10b981'; // Success green border
+                    updateBtn.textContent = 'Save Changes*';
+                    updateBtn.style.backgroundColor = '#10b981';
+                } else {
+                    card.style.borderColor = 'rgba(255,255,255,0.8)';
+                    updateBtn.textContent = 'Update';
+                    updateBtn.style.backgroundColor = ''; // Reverts to CSS default
+                }
+            });
+        });
+
+        // 2. Delete Confirmation Protection
+        const deleteButtons = document.querySelectorAll('.delete-btn');
+        deleteButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const link = btn.closest('a');
+                if (link) {
+                    e.preventDefault(); // Stop immediate navigation
+                    // Show professional warning
+                    if (confirm('Are you sure you want to delete this journal entry? This action cannot be undone.')) {
+                        window.location.href = link.href; // Proceed if confirmed
+                    }
+                }
+            });
+        });
+
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindTrack - Signup</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            /* Using your specific gradient for the signup page */
+            background: linear-gradient(135deg, #7F7FD5, #86A8E7, #91EAE4);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+            padding: 20px;
+        }
+
+        .container {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            animation: slideUp 0.4s ease-out forwards;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            margin-bottom: 30px;
+            color: #1f2937;
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+
+        .input-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #4b5563;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 10px;
+            border: 2px solid #e5e7eb;
+            font-size: 1rem;
+            background-color: #f9fafb;
+            transition: all 0.3s ease;
+        }
+
+        /* Adjust padding for password so text doesn't hide under the icon */
+        input[type="password"],
+        input.password-text {
+            padding-right: 45px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #7F7FD5;
+            background-color: #ffffff;
+            box-shadow: 0 4px 12px rgba(127, 127, 213, 0.15);
+        }
+
+        .toggle-btn {
+            position: absolute;
+            right: 12px;
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: #9ca3af;
+            transition: color 0.2s;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .toggle-btn:hover {
+            color: #4b5563;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: #7F7FD5;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            margin-top: 10px;
+            margin-bottom: 25px;
+        }
+
+        .submit-btn:hover {
+            background: #6a6ac4;
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+
+        .footer-text {
+            font-size: 0.95rem;
+            color: #6b7280;
+        }
+
+        .footer-text a {
+            text-decoration: none;
+            color: #7F7FD5;
+            font-weight: 600;
+            margin-left: 5px;
+            transition: color 0.2s ease;
+        }
+
+        .footer-text a:hover {
+            color: #5f5fc4;
+            text-decoration: underline;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Create Your Account</h2>
+
+    <form action="/auth/signup" method="post">
+
+        <div class="input-group">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" name="name" placeholder="John Doe" required>
+        </div>
+
+        <div class="input-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" placeholder="student@example.com" required>
+        </div>
+
+        <div class="input-group">
+            <label for="password">Password</label>
+            <div class="input-wrapper">
+                <input type="password" id="password" name="password" placeholder="Create a strong password" required>
+                <button type="button" class="toggle-btn" id="togglePassword" title="Toggle Password Visibility">
+                    <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <button type="submit" class="submit-btn">Sign Up</button>
+
+    </form>
+
+    <div class="footer-text">
+        <span>Already have an account?</span>
+        <a href="/login">Login</a>
+    </div>
+
+</div>
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const passwordInput = document.getElementById("password");
+        const togglePasswordBtn = document.getElementById("togglePassword");
+        const eyeIcon = document.getElementById("eyeIcon");
+
+        togglePasswordBtn.addEventListener("click", function() {
+            // Toggle the type attribute between password and text
+            const isPassword = passwordInput.getAttribute("type") === "password";
+            passwordInput.setAttribute("type", isPassword ? "text" : "password");
+
+            // Keep padding aligned when switching types
+            passwordInput.classList.toggle("password-text", isPassword);
+
+            // Swap the SVG icon based on visibility state
+            if (isPassword) {
+                // Eye-off icon (password visible)
+                eyeIcon.innerHTML = `
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                `;
+            } else {
+                // Eye icon (password hidden)
+                eyeIcon.innerHTML = `
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                `;
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

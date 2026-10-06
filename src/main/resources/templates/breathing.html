@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Guided Breathing</title>
+
+    <style>
+
+        *{
+        box-sizing:border-box;
+        margin:0;
+        padding:0;
+        font-family:Arial, sans-serif;
+        }
+
+        body{
+        height:100vh;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        flex-direction:column;
+
+        background:linear-gradient(135deg,#7F7FD5,#86A8E7,#91EAE4);
+        background-size:400% 400%;
+        animation:gradientFlow 12s ease infinite;
+
+        color:white;
+        text-align:center;
+        }
+
+        /* Animated background */
+
+        @keyframes gradientFlow{
+        0%{background-position:0% 50%}
+        50%{background-position:100% 50%}
+        100%{background-position:0% 50%}
+        }
+
+        h1{
+        margin-bottom:40px;
+        font-size:32px;
+        letter-spacing:1px;
+        }
+
+        /* Breathing circle */
+
+        .circle{
+
+        width:260px;
+        height:260px;
+
+        border-radius:50%;
+
+        background:rgba(255,255,255,0.2);
+
+        backdrop-filter:blur(10px);
+
+        display:flex;
+        justify-content:center;
+        align-items:center;
+
+        font-size:26px;
+        font-weight:bold;
+
+        box-shadow:
+        0 0 25px rgba(255,255,255,0.4),
+        0 0 60px rgba(255,255,255,0.2);
+
+        transition:transform 4s ease-in-out;
+
+        margin-bottom:40px;
+
+        }
+
+        /* Buttons */
+
+        .controls{
+        display:flex;
+        gap:15px;
+        }
+
+        button{
+
+        background:white;
+        color:#444;
+
+        border:none;
+        padding:12px 22px;
+
+        border-radius:10px;
+
+        font-size:16px;
+        cursor:pointer;
+
+        transition:0.2s;
+
+        }
+
+        button:hover{
+        transform:scale(1.05);
+        background:#f0f0f0;
+        }
+
+        /* breathing instruction */
+
+        .info{
+        margin-bottom:20px;
+        font-size:18px;
+        opacity:0.9;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<h1>Guided Breathing</h1>
+
+<div class="info">
+    Follow the circle and breathe slowly
+</div>
+
+<div class="circle" id="circle">
+    Ready
+</div>
+
+<div class="controls">
+
+    <button onclick="startBreathing()">Start</button>
+
+    <button onclick="stopBreathing()">Stop</button>
+
+    <a href="/dashboard">
+        <button>Back</button>
+    </a>
+
+</div>
+
+<script>
+
+    let circle=document.getElementById("circle")
+
+    let running=false
+
+    function startBreathing(){
+
+    if(running) return
+
+    running=true
+
+    breathingLoop()
+
+    }
+
+    function breathingLoop(){
+
+    if(!running) return
+
+    circle.innerText="Inhale"
+
+    circle.style.transform="scale(1.6)"
+
+    setTimeout(()=>{
+
+    circle.innerText="Hold"
+
+    },4000)
+
+    setTimeout(()=>{
+
+    circle.innerText="Exhale"
+
+    circle.style.transform="scale(1)"
+
+    },6000)
+
+    setTimeout(()=>{
+
+    circle.innerText="Hold"
+
+    },10000)
+
+    setTimeout(()=>{
+
+    breathingLoop()
+
+    },12000)
+
+    }
+
+    function stopBreathing(){
+
+    running=false
+
+    circle.innerText="Stopped"
+
+    circle.style.transform="scale(1)"
+
+    }
+
+</script>
+
+</body>
+</html>
